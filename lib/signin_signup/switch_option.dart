@@ -1,5 +1,3 @@
-import 'package:customize_food/hidden_drawer/hidden_drawer_buyer.dart';
-import 'package:customize_food/hidden_drawer/hidden_drawer_seller.dart';
 import 'package:flutter/material.dart';
 
 class SwitchOption extends StatelessWidget {
