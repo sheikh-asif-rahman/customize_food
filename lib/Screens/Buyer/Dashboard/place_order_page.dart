@@ -1,8 +1,5 @@
 import 'package:customize_food/screens/buyer/dashboard/bargening_platform.dart';
-import 'package:customize_food/screens/buyer/dashboard/custom_make.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/cupertino.dart';
-
 class PlaceOrderPage extends StatefulWidget {
   const PlaceOrderPage({super.key});
 
@@ -316,11 +313,11 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                   ),
                   onPressed: () {
                     //onpress action code here
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => CustomMake(),
-                      ),
-                    );
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => CustomMake(),
+                    //   ),
+                    // );
                   },
                   child: const Text(
                     'Make it Custom for me',

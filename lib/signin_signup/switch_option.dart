@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../Hidden_Drawers/hidden_drawer_buyer.dart';
+import '../Hidden_Drawers/hidden_drawer_seller.dart';
 
 class SwitchOption extends StatelessWidget {
   const SwitchOption({super.key});
@@ -52,11 +54,11 @@ class SwitchOption extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => HiddenDrawerBuyer(),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HiddenDrawerBuyer(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'BUYER',
@@ -84,11 +86,11 @@ class SwitchOption extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => HiddenDrawerSeller(),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HiddenDrawerSeller(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'SELLER',

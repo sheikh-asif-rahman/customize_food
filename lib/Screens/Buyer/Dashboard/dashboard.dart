@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
 import 'add_to_bag.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class DashboardPageBuyer extends StatefulWidget {
   const DashboardPageBuyer({super.key});
@@ -15,6 +16,49 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
   double rating = 2;
   //variable for search box data//
   var inputText = "";
+  List email = [];
+  List products = [];
+  var menulen = 0;
+  var firestoreInstance = FirebaseFirestore.instance;
+
+  //fetch products
+  fetchProducts() async {
+    QuerySnapshot qnmail = await firestoreInstance.collection("menu-holder-user-list").get();
+    for (int i = 0; i < qnmail.docs.length; i++)
+      {
+        setState(() {
+          email.add(qnmail.docs[i].id);
+        });
+        QuerySnapshot qnmenu =  await firestoreInstance.collection("menu").doc(email[i]).collection("menu").get();
+        for(int j = 0; j < qnmenu.docs.length; j++)
+          {
+           setState(() {
+             products.add({
+               "food_name": qnmenu.docs[j]["food_name"],
+               "food_code": qnmenu.docs[j]["food_code"],
+               "food_price": qnmenu.docs[j]["food_price"],
+               "food_description": qnmenu.docs[j]["food_description"],
+               "image_url": qnmenu.docs[j]["image_url"],
+             });
+           });
+          }
+      }
+    // setState(()  {
+    //   for(int i = 0; i<qnmail.docs.length; i++)
+    //     {
+    //       email.add(qnmail.docs[i].id);
+    //     }
+    // });
+    // for (int j = 0; j < qnmail.docs.length; j++)
+    //   {
+    //     setState(() {
+    //       menu.add(qnmenu.docs[])
+    //     });
+    //   }
+    print(email);
+    print(menulen);
+    print(products);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +112,9 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
                       ),
                       alignment: Alignment.center,
                       child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            fetchProducts();
+                          },
                           child: Column(
                             children: [
                               ClipRRect(
