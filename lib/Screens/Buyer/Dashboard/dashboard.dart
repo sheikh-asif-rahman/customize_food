@@ -45,9 +45,6 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
         });
       }
     }
-    print(email);
-    print(menulen);
-    print(products);
   }
 
   @override
@@ -102,9 +99,7 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
                   ),
                   alignment: Alignment.center,
                   child: GestureDetector(
-                      onTap: () {
-                        fetchProducts();
-                      },
+                      onTap: () {},
                       child: Column(
                         children: [
                           ClipRRect(
@@ -401,7 +396,7 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
                 //all products come here
                 child: GridView.builder(
                     scrollDirection: Axis.vertical,
-                    //itemCount: products.length,
+                    itemCount: products.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2, childAspectRatio: 0.88),
@@ -418,39 +413,20 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
                           child: Column(
                             children: [
                               AspectRatio(
-                                //area that image will take of the card
-                                aspectRatio: 1.50,
-                                child: Image.asset("image/noodles.jpg"),
-
-                                //future code from data base
-                                //     child:
-                                //         Image.network(products[index]["image"][0])),
-                                // Text(products[index]["name"],
-                                //     style: const TextStyle(
-                                //         fontWeight: FontWeight.bold, fontSize: 25)),
-                                // const SizedBox(
-                                //   height: 5,
-                                // ),
-                                // Text(
-                                //   "TK ${products[index]['price'].toString()}",
-                                //   style: const TextStyle(
-                                //       fontWeight: FontWeight.bold,
-                                //       fontSize: 20,
-                                //       color: Colors.red),
-                              ),
-                              //name of the card food
-                              const Text(
-                                "Noodles",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ),
-                              //SizedBox(height: 5,),
-                              const Text(
-                                "price",
-                                style: TextStyle(
-                                    fontSize: 22,
+                                  //area that image will take of the card
+                                  aspectRatio: 1.50,
+                                  child: Image.network(
+                                      products[index]["image_url"])),
+                              Text(products[index]["food_name"],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25)),
+                              Text(
+                                "TK ${products[index]['food_price'].toString()}",
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue),
+                                    fontSize: 20,
+                                    color: Colors.red),
                               ),
                               //rating part code
                               RatingBar.builder(
