@@ -412,7 +412,7 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const AddToBag())),
+                                builder: (_) => AddToBag(products[index]))),
                         //card code starts here
                         child: Card(
                           elevation: 3,

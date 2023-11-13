@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AddToBag extends StatefulWidget {
-  const AddToBag({super.key});
+  var products;
+  AddToBag(this.products);
 
   @override
   State<AddToBag> createState() => _AddToBagState();
@@ -27,6 +28,29 @@ class _AddToBagState extends State<AddToBag> {
         count--;
       }
     });
+  }
+
+  //alert box code
+  showAlertDialog() {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: const Text("Food Description"),
+      content: Text(widget.products["food_description"]),
+      actions: [
+        okButton,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -83,16 +107,15 @@ class _AddToBagState extends State<AddToBag> {
             //==================================================//
             //image part
             Container(
-                margin: const EdgeInsets.only(
-                  left: 30,
-                  right: 30,
-                ),
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Image.asset(
-                  "image/noodles.jpg",
-                  height: 300,
-                  width: 300,
-                )),
+              margin: const EdgeInsets.only(
+                left: 30,
+                right: 30,
+              ),
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Image.network(widget.products["image_url"]),
+              height: 300,
+              // width: 300,
+            ),
             //=================================================//
             //==================================================//
             //name of the food
@@ -102,9 +125,9 @@ class _AddToBagState extends State<AddToBag> {
                 right: 20,
               ),
               padding: const EdgeInsets.only(left: 20, right: 20),
-              child: const Text(
-                "Name",
-                style: TextStyle(
+              child: Text(
+                widget.products["food_name"],
+                style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
@@ -118,31 +141,14 @@ class _AddToBagState extends State<AddToBag> {
                 top: 5,
               ),
               padding: const EdgeInsets.only(left: 20, right: 20),
-              child: const Text(
-                "price",
-                style: TextStyle(
+              child: Text(
+                "${widget.products["food_price"]} TK",
+                style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.deepOrangeAccent),
               ),
             ),
-            //name of the shop
-            Container(
-              margin: const EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 5,
-              ),
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: const Text(
-                "shope name",
-                style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-
             Row(
               children: [
                 //place Order
@@ -164,7 +170,7 @@ class _AddToBagState extends State<AddToBag> {
                       //onpress action code here
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => PlaceOrderPage(),
+                          builder: (context) => PlaceOrderPage(widget.products),
                         ),
                       );
                     },
@@ -206,55 +212,61 @@ class _AddToBagState extends State<AddToBag> {
                 ),
               ],
             ),
-            Expanded(
-                child: GridView.builder(
-                    scrollDirection: Axis.horizontal,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 1, childAspectRatio: 0.8),
-                    itemBuilder: (_, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(left: 20, bottom: 50),
-                        color: Colors.grey,
-                        child: Column(
-                          children: [
-                            //name of customer part
-                            Text(
-                              "Name",
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                            RatingBar.builder(
-                              ignoreGestures: true, // <---- add this
-                              initialRating: rating,
-                              allowHalfRating: true,
-                              //minRating: 1,
-                              itemSize: 25,
-                              itemPadding: EdgeInsets.symmetric(horizontal: 2),
-                              itemBuilder: (context, _) => Icon(
-                                Icons.star,
-                                color: Colors.amber,
+            //star and comment part
+            SizedBox(
+              height: 150,
+              child: Expanded(
+                  child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1, childAspectRatio: 0.8),
+                      itemBuilder: (_, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(left: 20, bottom: 50),
+                          color: Colors.grey,
+                          child: Column(
+                            children: [
+                              //name of customer part
+                              Text(
+                                "Name",
+                                style: TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.bold),
                               ),
-                              updateOnDrag: true,
-                              //set rating from variable value
-                              onRatingUpdate: (rating) => setState(() {
-                                //rating = variable rating value
-                                this.rating = rating;
-                              }),
-                            ),
+                              RatingBar.builder(
+                                ignoreGestures: true, // <---- add this
+                                initialRating: rating,
+                                allowHalfRating: true,
+                                //minRating: 1,
+                                itemSize: 25,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 2),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                updateOnDrag: true,
+                                //set rating from variable value
+                                onRatingUpdate: (rating) => setState(() {
+                                  //rating = variable rating value
+                                  this.rating = rating;
+                                }),
+                              ),
 
-                            //rating time and date
-                            Text(
-                              "Date and time",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ],
-                        ),
-                      );
-                    })),
+                              //rating time and date
+                              Text(
+                                "Date and time",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        );
+                      })),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                //description button code
                 Container(
                   alignment: Alignment.centerRight,
                   margin: const EdgeInsets.only(left: 20, bottom: 20),
@@ -263,7 +275,7 @@ class _AddToBagState extends State<AddToBag> {
                     backgroundColor: Colors.white,
                     child: IconButton(
                         onPressed: () {
-                          //on press code here
+                          showAlertDialog();
                         },
                         icon: Icon(
                           Icons.info_sharp,
@@ -271,6 +283,7 @@ class _AddToBagState extends State<AddToBag> {
                         )),
                   ),
                 ),
+                //message button code
                 Container(
                   alignment: Alignment.centerRight,
                   margin: const EdgeInsets.only(bottom: 20, right: 20),

@@ -1,7 +1,9 @@
 import 'package:customize_food/screens/buyer/dashboard/bargening_platform.dart';
 import 'package:flutter/material.dart';
+
 class PlaceOrderPage extends StatefulWidget {
-  const PlaceOrderPage({super.key});
+  var product;
+  PlaceOrderPage(this.product);
 
   @override
   State<PlaceOrderPage> createState() => _PlaceOrderPageState();
@@ -9,7 +11,8 @@ class PlaceOrderPage extends StatefulWidget {
 
 class _PlaceOrderPageState extends State<PlaceOrderPage> {
   int count = 1;
-  int price = 100;
+  int price = 1;
+
   void increment() {
     setState(() {
       if (count < 15) {
@@ -29,6 +32,12 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
   int total() {
     int totalPrice = count * price;
     return totalPrice;
+  }
+
+  @override
+  void initState() {
+    price = int.parse(widget.product["food_price"]);
+    super.initState();
   }
 
   @override
@@ -60,267 +69,199 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       ),
       body: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //container for image
+          Container(
+              height: 300,
+              // margin: const EdgeInsets.only(
+              //   left: 50,
+              //   right: 50,
+              // ),
+              padding: const EdgeInsets.only(left: 50, right: 50),
+              child: Image.network(widget.product["image_url"])),
+          //name of the food
+          Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Text(
+              widget.product["food_name"],
+              style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange),
+            ),
+          ),
+          //increment decrement button part----------------//
+          Row(
             children: [
-              //container for image
+              //add how much item you want in count :
               Container(
-                  margin: const EdgeInsets.only(
-                    left: 50,
-                    right: 50,
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.only(left: 30, right: 30),
+
+                // width: 100,
+                // height: 35,
+                child: const Text(
+                  "Total Item:",
+                  style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+              //plus button
+              Container(
+                width: 35,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlueAccent,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: GestureDetector(
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.black,
+                    size: 35,
                   ),
-                  padding: const EdgeInsets.only(left: 50, right: 50),
-                  child: Image.asset(
-                    "image/noodles.jpg",
-                    height: 200,
-                    width: 200,
-                  )),
-              //name of the food
+                  onTap: () {
+                    //ontap action code here-----------//
+                    increment();
+                  },
+                ),
+              ),
+              //screen for increament decreament button action
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  count.toString(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orangeAccent,
+                  ),
+                ),
+              ),
+              //decreament button
+              Container(
+                width: 35,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: GestureDetector(
+                  child: const Icon(
+                    Icons.remove,
+                    color: Colors.black,
+                    size: 35,
+                  ),
+                  onTap: () => {
+                    //ontape action code
+                    decrement()
+                  },
+                ),
+              ),
+            ],
+          ),
+          //total price part
+          Row(
+            children: [
               Container(
                 margin: const EdgeInsets.only(
-                  left: 100,
-                  right: 100,
+                  left: 10,
+                  right: 10,
                 ),
-                padding: const EdgeInsets.only(left: 10, right: 10),
+                padding: const EdgeInsets.only(left: 30),
                 child: const Text(
-                  "Name",
+                  "Your Cost:",
                   style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
               ),
-              //increment decrement button part----------------//
-              Row(
+              Container(
+                margin: const EdgeInsets.only(left: 10, right: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                alignment: Alignment.centerRight,
+                height: 50,
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: Text(
+                  "\TK ${total().toString()}",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          //Delivery location pickup button
+          Container(
+            margin: const EdgeInsets.only(
+              left: 85,
+              right: 85,
+            ),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.pink;
+                    }
+                    return Colors.blue;
+                  },
+                ),
+              ),
+              onPressed: () {
+                //onpress action code here
+              },
+              child: const Row(
                 children: [
-                  //add how much item you want in count :
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.only(left: 30, right: 30),
-
-                    // width: 100,
-                    // height: 35,
-                    child: const Text(
-                      "Total Item:",
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                  //plus button
-                  Container(
-                    width: 35,
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: GestureDetector(
-                      child: const Icon(
-                        Icons.add,
+                  Text(
+                    'Delivery Location',
+                    style: TextStyle(
                         color: Colors.black,
-                        size: 35,
-                      ),
-                      onTap: () {
-                        //ontap action code here-----------//
-                        increment();
-                      },
-                    ),
-                  ),
-                  //screen for increament decreament button action
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      count.toString(),
-                      style: const TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orangeAccent,
-                      ),
-                    ),
+                        fontWeight: FontWeight.bold),
                   ),
-                  //decreament button
-                  Container(
-                    width: 35,
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: GestureDetector(
-                      child: const Icon(
-                        Icons.remove,
-                        color: Colors.black,
-                        size: 35,
-                      ),
-                      onTap: () => {
-                        //ontape action code
-                        decrement()
-                      },
-                    ),
-                  ),
+                  SizedBox(width: 10),
+                  Icon(Icons.map_sharp)
                 ],
               ),
-              //total price part
-              Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                    ),
-                    padding: const EdgeInsets.only(left: 30),
-                    child: const Text(
-                      "Your Cost:",
-                      style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 10, right: 10),
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    alignment: Alignment.centerRight,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.transparent,
-                    ),
-                    child: Text(
-                      "\TK ${total().toString()}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-              //Delivery location pickup button
+            ),
+          ),
+
+          Row(
+            children: [
+              //bargening button
               Container(
                 margin: const EdgeInsets.only(
-                  left: 85,
-                  right: 85,
-                ),
+                    left: 40, right: 10, bottom: 10, top: 10),
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.pink;
-                        }
-                        return Colors.blue;
-                      },
-                    ),
-                  ),
-                  onPressed: () {
-                    //onpress action code here
-                  },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Delivery Location',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 10),
-                      Icon(Icons.map_sharp)
-                    ],
-                  ),
-                ),
-              ),
-
-              Row(
-                children: [
-                  //bargening button
-                  Container(
-                    margin: const EdgeInsets.only(
-                        left: 40, right: 10, bottom: 10, top: 10),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blue;
-                            }
-                            return Colors.pinkAccent;
-                          },
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => BargeningPlatform(),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Bargening',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  //place my order part
-                  Container(
-                    margin: const EdgeInsets.only(
-                        left: 10, right: 10, bottom: 10, top: 10),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blue;
-                            }
-                            return Colors.white;
-                          },
-                        ),
-                      ),
-                      onPressed: () {
-                        //onpress action code here
-                      },
-                      child: const Text(
-                        'Place my Order',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              //button for customize food
-              Container(
-                margin:
-                const EdgeInsets.only(left: 120, right: 5, bottom: 10, top: 10),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
+                      (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed)) {
                           return Colors.blue;
                         }
-                        return Colors.orange;
+                        return Colors.pinkAccent;
                       },
                     ),
                   ),
                   onPressed: () {
-                    //onpress action code here
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => CustomMake(),
-                    //   ),
-                    // );
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => BargeningPlatform(),
+                      ),
+                    );
                   },
                   child: const Text(
-                    'Make it Custom for me',
+                    'Bargening',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -328,9 +269,71 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                   ),
                 ),
               ),
-              //side by side button for order and cart
+              //place my order part
+              Container(
+                margin: const EdgeInsets.only(
+                    left: 10, right: 10, bottom: 10, top: 10),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.pressed)) {
+                          return Colors.blue;
+                        }
+                        return Colors.white;
+                      },
+                    ),
+                  ),
+                  onPressed: () {
+                    //onpress action code here
+                  },
+                  child: const Text(
+                    'Place my Order',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             ],
-          )),
+          ),
+
+          //button for customize food
+          Container(
+            margin:
+                const EdgeInsets.only(left: 120, right: 5, bottom: 10, top: 10),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.blue;
+                    }
+                    return Colors.orange;
+                  },
+                ),
+              ),
+              onPressed: () {
+                //onpress action code here
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => CustomMake(),
+                //   ),
+                // );
+              },
+              child: const Text(
+                'Make it Custom for me',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          //side by side button for order and cart
+        ],
+      )),
     );
   }
 }
