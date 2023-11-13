@@ -39,43 +39,43 @@ class _BargeningPlatformState extends State<BargeningPlatform> {
       body: SafeArea(
         child: SingleChildScrollView(
             child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(150),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.blue;
-                          }
-                          return Colors.orangeAccent;
-                        },
-                      ),
-                    ),
-                    onPressed: () async {
-                      List<PersonEntry> persons = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SOF(),
-                        ),
-                      );
-                      if (persons != null) persons.forEach(print);
-
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SignupScreen(),
-                      //   ),
-                      // );
+          children: [
+            Container(
+              margin: const EdgeInsets.all(150),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return Colors.blue;
+                      }
+                      return Colors.orangeAccent;
                     },
-                    child: const Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.black, fontSize: 17),
-                    ),
                   ),
                 ),
-              ],
-            )),
+                onPressed: () async {
+                  List<PersonEntry> persons = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SOF(),
+                    ),
+                  );
+                  if (persons != null) persons.forEach(print);
+
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => SignupScreen(),
+                  //   ),
+                  // );
+                },
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(color: Colors.black, fontSize: 17),
+                ),
+              ),
+            ),
+          ],
+        )),
       ),
     );
   }
@@ -143,7 +143,7 @@ class _SOFState extends State<SOF> {
           //container for price
           Container(
             margin:
-            const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
             padding: const EdgeInsets.only(left: 20, right: 20),
             decoration: BoxDecoration(
               border: Border.all(width: 3, color: Colors.black),

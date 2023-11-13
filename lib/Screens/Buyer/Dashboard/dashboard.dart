@@ -48,6 +48,12 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
   }
 
   @override
+  void initState() {
+    fetchProducts();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //for screen size generate of device----------------------//
     final screenSize = MediaQuery.of(context).size;

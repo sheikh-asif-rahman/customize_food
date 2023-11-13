@@ -152,7 +152,7 @@ class _AddToBagState extends State<AddToBag> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed)) {
                             return Colors.deepOrange;
                           }
@@ -184,7 +184,7 @@ class _AddToBagState extends State<AddToBag> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed)) {
                             return Colors.blue;
                           }
@@ -210,8 +210,8 @@ class _AddToBagState extends State<AddToBag> {
                 child: GridView.builder(
                     scrollDirection: Axis.horizontal,
                     gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1, childAspectRatio: 0.8),
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1, childAspectRatio: 0.8),
                     itemBuilder: (_, index) {
                       return Container(
                         margin: const EdgeInsets.only(left: 20, bottom: 50),
