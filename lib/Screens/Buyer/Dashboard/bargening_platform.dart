@@ -1,13 +1,43 @@
 import 'package:flutter/material.dart';
 
 class BargeningPlatform extends StatefulWidget {
-  const BargeningPlatform({super.key});
-
+  var product;
+  BargeningPlatform(this.product);
   @override
   State<BargeningPlatform> createState() => _BargeningPlatformState();
 }
 
 class _BargeningPlatformState extends State<BargeningPlatform> {
+  int count = 1;
+  int price = 1;
+
+  void increment() {
+    setState(() {
+      if (count < 15) {
+        count++;
+      }
+    });
+  }
+
+  void decrement() {
+    setState(() {
+      if (count > 1) {
+        count--;
+      }
+    });
+  }
+
+  int total() {
+    int totalPrice = count * price;
+    return totalPrice;
+  }
+
+  @override
+  void initState() {
+    price = int.parse(widget.product["food_price"]);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +46,7 @@ class _BargeningPlatformState extends State<BargeningPlatform> {
         backgroundColor: Colors.blue,
         elevation: 15,
         title: const Text(
-          "Place Your Offer",
+          "Your Offer",
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 35),
         ),
@@ -37,205 +67,338 @@ class _BargeningPlatformState extends State<BargeningPlatform> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+          child: Column(
+        children: [
+          //name of the food
+          SizedBox(
+            child: Text(
+              "Name: ${widget.product["food_name"]}",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          //food code
+          SizedBox(
+            child: Text(
+              "Code: ${widget.product["food_code"]}",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          //column for user part box
+          Container(
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                border: Border.all(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
             child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(150),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return Colors.blue;
-                      }
-                      return Colors.orangeAccent;
-                    },
+              children: [
+                const SizedBox(
+                  child: Text(
+                    "Your Box",
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.pinkAccent),
                   ),
                 ),
-                onPressed: () async {
-                  List<PersonEntry> persons = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SOF(),
+
+                //increment decrement button part----------------//
+                Row(
+                  children: [
+                    //add how much item you want in count :
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+
+                      // width: 100,
+                      // height: 35,
+                      child: const Text(
+                        "Total Item:",
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
                     ),
-                  );
-                  if (persons != null) persons.forEach(print);
-
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => SignupScreen(),
-                  //   ),
-                  // );
-                },
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(color: Colors.black, fontSize: 17),
+                    //plus button
+                    Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.lightBlueAccent,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: GestureDetector(
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.black,
+                          size: 35,
+                        ),
+                        onTap: () {
+                          //ontap action code here-----------//
+                          increment();
+                        },
+                      ),
+                    ),
+                    //screen for increament decreament button action
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        count.toString(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                    //decreament button
+                    Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: GestureDetector(
+                        child: const Icon(
+                          Icons.remove,
+                          color: Colors.black,
+                          size: 35,
+                        ),
+                        onTap: () => {
+                          //ontape action code
+                          decrement()
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ],
-        )),
-      ),
-    );
-  }
-}
-
-class SOF extends StatefulWidget {
-  @override
-  _SOFState createState() => _SOFState();
-}
-
-class _SOFState extends State<SOF> {
-  int attempt = 3;
-  var attemptCase = false;
-  var productPrice = <TextEditingController>[];
-  var productQuantity = <TextEditingController>[];
-  var cards = <Card>[];
-
-  Card createCard() {
-    var quantityController = TextEditingController();
-    var priceController = TextEditingController();
-    productPrice.add(quantityController);
-    productQuantity.add(priceController);
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            child: const Text(
-              'Yours Offer',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-              ),
+                //total price part
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Text(
+                        "Total Cost:",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10, right: 10),
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      alignment: Alignment.centerRight,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
+                      ),
+                      child: Text(
+                        "\TK ${total().toString()}",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                //your offer part
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                      ),
+                      padding: const EdgeInsets.only(left: 30),
+                      child: const Text(
+                        "Your Offer:",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 45,
+                      width: 135,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextFormField(
+                        //get value to controller
+                        // controller: emailController,
+                        cursorColor: Colors.white,
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: const InputDecoration(
+                          labelStyle: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                //send button container
+                Row(
+                  children: [
+                    Container(
+                      margin:
+                          const EdgeInsets.only(top: 20, left: 10, right: 10),
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.pink;
+                              }
+                              return Colors.orangeAccent;
+                            },
+                          ),
+                        ),
+                        onPressed: () {
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const SignupScreen(),
+                          //   ),
+                          // );
+                        },
+                        child: const Text(
+                          'Send',
+                          style: TextStyle(color: Colors.black, fontSize: 25),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 200,
+                      margin:
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      child: const Text(
+                        "Attempt Left: 123",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          //container for quantity
+          //column for seller part box
           Container(
-            margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              border: Border.all(width: 3, color: Colors.black),
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.lightBlueAccent,
-            ),
-            alignment: Alignment.center,
-            child: TextFormField(
-              controller: quantityController,
-              cursorColor: Colors.blue,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                  icon: Icon(
-                    Icons.production_quantity_limits,
-                    color: Colors.black,
+                color: Colors.blueAccent,
+                border: Border.all(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Column(
+              children: [
+                const SizedBox(
+                  child: Text(
+                    "Seller Box",
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.pinkAccent),
                   ),
-                  labelText: "Quantity",
-                  labelStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none),
-            ),
-          ),
-          //container for price
-          Container(
-            margin:
-                const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            decoration: BoxDecoration(
-              border: Border.all(width: 3, color: Colors.black),
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.lightBlueAccent,
-            ),
-            alignment: Alignment.center,
-            child: TextFormField(
-              controller: priceController,
-              cursorColor: Colors.blue,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                  icon: Icon(
-                    Icons.attach_money_sharp,
-                    color: Colors.black,
+                ),
+                //your offer part
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Text(
+                        "Sellers Offer:",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(right: 10, left: 35),
+                      alignment: Alignment.center,
+                      height: 45,
+                      width: 135,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextFormField(
+                        //get value to controller
+                        // controller: emailController,
+                        cursorColor: Colors.white,
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: const InputDecoration(
+                          labelStyle: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                //send button container
+                Container(
+                  margin: const EdgeInsets.only(
+                    top: 20,
                   ),
-                  labelText: "Price",
-                  labelStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none),
+                  width: 250,
+                  height: 50,
+                  padding: const EdgeInsets.only(right: 100),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.pink;
+                          }
+                          return Colors.orangeAccent;
+                        },
+                      ),
+                    ),
+                    onPressed: () {
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const SignupScreen(),
+                      //   ),
+                      // );
+                    },
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(color: Colors.black, fontSize: 25),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
-      ),
+      )),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    cards.add(createCard());
-  }
-
-  _onDone() {
-    List<PersonEntry> entries = [];
-    for (int i = 0; i < cards.length; i++) {
-      var quantity = productPrice[i].text;
-      var price = productQuantity[i].text;
-      entries.add(PersonEntry(quantity, price));
-    }
-    Navigator.pop(context, entries);
-  }
-
-  attemptTry() {
-    setState(() => cards.add(createCard()));
-    attempt = attempt--;
-    if (attempt == 0) {
-      setState(() => attemptCase = true);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView.builder(
-                itemCount: cards.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return cards[index];
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                  child: const Text('add new'),
-                  onPressed: attemptCase ? null : attemptTry()),
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.done), onPressed: _onDone),
-    );
-  }
-}
-
-class PersonEntry {
-  final String quantity;
-  final String price;
-
-  PersonEntry(this.quantity, this.price);
-  @override
-  String toString() {
-    return 'Person: quantity= $quantity, price= $price';
   }
 }

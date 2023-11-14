@@ -256,7 +256,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => BargeningPlatform(),
+                        builder: (context) => BargeningPlatform(widget.product),
                       ),
                     );
                   },
