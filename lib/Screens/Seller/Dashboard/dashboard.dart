@@ -46,12 +46,12 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                 //container for Order Online
                 Container(
                   height: 50,
-                  margin: EdgeInsets.all(25),
+                  margin: EdgeInsets.only(left: 20),
                   //padding: const EdgeInsets.only(left: 20, right: 20),
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed)) {
                             return Colors.blue;
                           }
@@ -68,7 +68,7 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                       // );
                     },
                     child: const Text(
-                      'Orders Online',
+                      'Customers Offer',
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                   ),
@@ -81,7 +81,7 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed)) {
                             return Colors.blue;
                           }
@@ -116,7 +116,7 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed)) {
                             return Colors.blue;
                           }
@@ -146,7 +146,7 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed)) {
                             return Colors.blue;
                           }

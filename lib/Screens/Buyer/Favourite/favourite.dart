@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FavouriteFoodList extends StatefulWidget {
@@ -8,6 +10,33 @@ class FavouriteFoodList extends StatefulWidget {
 }
 
 class _FavouriteFoodListState extends State<FavouriteFoodList> {
+  List items = [];
+  //fetch data
+  fetchFavourite() async {
+    QuerySnapshot qnFav = await FirebaseFirestore.instance
+        .collection("user-favourite-list")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("items")
+        .get();
+    setState(() {
+      for (int i = 0; i < qnFav.docs.length; i++) {
+        items.add({
+          "food_name": qnFav.docs[i]["food_name"],
+          "food_price": qnFav.docs[i]["food_price"],
+          "food_description": qnFav.docs[i]["food_description"],
+          "image_url": qnFav.docs[i]["image_url"],
+        });
+      }
+    });
+    return qnFav.docs;
+  }
+
+  @override
+  void initState() {
+    fetchFavourite();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +45,7 @@ class _FavouriteFoodListState extends State<FavouriteFoodList> {
         //inside a safe area of user device, work on container------//
         child: Container(
           padding:
-          const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+              const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
           //as a cloumn, we think the screen elements-------------//
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -25,35 +54,36 @@ class _FavouriteFoodListState extends State<FavouriteFoodList> {
                 Expanded(
                     child: GridView.builder(
                         scrollDirection: Axis.vertical,
-                        //itemCount: products.length,
+                        itemCount: items.length,
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: 0.8),
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2, childAspectRatio: 0.8),
                         itemBuilder: (_, index) {
                           return GestureDetector(
                             //onTap code here//
                             onTap: () => {},
-                            child: const Card(
+                            child: Card(
                               elevation: 3,
                               child: Column(
                                 children: [
                                   AspectRatio(
-                                    aspectRatio: 1.25,
-                                    //future code from data base
-                                    //     child:
-                                    //         Image.network(products[index]["image"][0])),
-                                    // Text(products[index]["name"],
-                                    //     style: const TextStyle(
-                                    //         fontWeight: FontWeight.bold, fontSize: 25)),
-                                    // const SizedBox(
-                                    //   height: 5,
-                                    // ),
-                                    // Text(
-                                    //   "TK ${products[index]['price'].toString()}",
-                                    //   style: const TextStyle(
-                                    //       fontWeight: FontWeight.bold,
-                                    //       fontSize: 20,
-                                    //       color: Colors.red),
+                                      aspectRatio: 1.25,
+                                      // future code from data base
+                                      child: Image.network(
+                                          items[index]["image_url"])),
+                                  Text(items[index]["food_name"],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25)),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "TK ${items[index]['food_price'].toString()}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: Colors.red),
                                   ),
                                 ],
                               ),
