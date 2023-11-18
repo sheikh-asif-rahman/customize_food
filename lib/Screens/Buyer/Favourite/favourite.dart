@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Screens/Buyer/Favourite/favourite_detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -61,7 +62,13 @@ class _FavouriteFoodListState extends State<FavouriteFoodList> {
                         itemBuilder: (_, index) {
                           return GestureDetector(
                             //onTap code here//
-                            onTap: () => {},
+                            onTap: () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          FavouriteDetail(items[index])))
+                            },
                             child: Card(
                               elevation: 3,
                               child: Column(
