@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customize_food/Screens/Buyer/Dashboard/place_order_page.dart';
+import 'package:customize_food/utils/showSnackBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FavouriteDetail extends StatefulWidget {
@@ -59,6 +62,30 @@ class _FavouriteDetailState extends State<FavouriteDetail> {
                 )),
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundColor: Colors.pinkAccent,
+              child: IconButton(
+                  onPressed: () {
+                    //remove from favourite db list
+                    FirebaseFirestore.instance
+                        .collection("user-favourite-list")
+                        .doc(FirebaseAuth.instance.currentUser!.email)
+                        .collection("items")
+                        .doc(widget.products["food_code"].toString())
+                        .delete()
+                        .then(
+                            (value) => showSnckBar(context, "Item Removed!!"));
+                  },
+                  icon: Icon(
+                    Icons.remove_circle_outline,
+                    color: Colors.white,
+                  )),
+            ),
+          )
+        ],
       ),
       body: SafeArea(
         child: Column(

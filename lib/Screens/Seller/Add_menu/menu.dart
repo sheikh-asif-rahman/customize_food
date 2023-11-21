@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Screens/Seller/Add_menu/add_menu.dart';
 import 'package:customize_food/Screens/Seller/Add_menu/product_detail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'add_menu.dart';
 class Menu extends StatefulWidget {
   const Menu({super.key});
 
@@ -10,6 +12,35 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  //list of menu
+  List menu = [];
+  //fetch products of menu
+  fetchMenu() async {
+    QuerySnapshot qnmenu = await FirebaseFirestore.instance
+        .collection("menu")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("menu")
+        .get();
+    setState(() {
+      for (int i = 0; i < qnmenu.docs.length; i++) {
+        menu.add({
+          "food_name": qnmenu.docs[i]["food_name"],
+          "food_code": qnmenu.docs[i]["food_code"],
+          "food_price": qnmenu.docs[i]["food_price"],
+          "food_description": qnmenu.docs[i]["food_description"],
+          "image_url": qnmenu.docs[i]["image_url"],
+        });
+      }
+    });
+    return qnmenu.docs;
+  }
+
+  @override
+  void initState() {
+    fetchMenu();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +49,7 @@ class _MenuState extends State<Menu> {
         //inside a safe area of user device, work on container------//
         child: Container(
           padding:
-          const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+              const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
           //as a cloumn, we think the screen elements-------------//
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -44,8 +75,8 @@ class _MenuState extends State<Menu> {
                       child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
                                 if (states.contains(MaterialState.pressed)) {
                                   return Colors.amberAccent;
                                 }
@@ -55,9 +86,9 @@ class _MenuState extends State<Menu> {
                           ),
                           //on press response code
                           onPressed: () {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //   builder: (context) => AddMenuItem(),
-                            // ));
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AddMenuItem(),
+                            ));
                           },
                           child: Icon(
                             Icons.add,
@@ -71,39 +102,41 @@ class _MenuState extends State<Menu> {
                 Expanded(
                     child: GridView.builder(
                         scrollDirection: Axis.vertical,
-                        //itemCount: products.length,
+                        itemCount: menu.length,
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: 0.8),
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2, childAspectRatio: 0.8),
                         itemBuilder: (_, index) {
                           return GestureDetector(
                             //onTap code here//
                             onTap: () => {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ProductDetail(),
+                                builder: (context) =>
+                                    ProductDetail(menu[index]),
                               ))
                             },
-                            child: const Card(
+                            child: Card(
                               elevation: 3,
                               child: Column(
                                 children: [
                                   AspectRatio(
-                                    aspectRatio: 1.25,
-                                    //future code from data base
-                                    //     child:
-                                    //         Image.network(products[index]["image"][0])),
-                                    // Text(products[index]["name"],
-                                    //     style: const TextStyle(
-                                    //         fontWeight: FontWeight.bold, fontSize: 25)),
-                                    // const SizedBox(
-                                    //   height: 5,
-                                    // ),
-                                    // Text(
-                                    //   "TK ${products[index]['price'].toString()}",
-                                    //   style: const TextStyle(
-                                    //       fontWeight: FontWeight.bold,
-                                    //       fontSize: 20,
-                                    //       color: Colors.red),
+                                      aspectRatio: 1.25,
+                                      //future code from data base
+                                      child: Image.network(
+                                          menu[index]["image_url"])),
+                                  Text(menu[index]["food_name"],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25)),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "TK ${menu[index]['food_price'].toString()}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: Colors.red),
                                   ),
                                 ],
                               ),

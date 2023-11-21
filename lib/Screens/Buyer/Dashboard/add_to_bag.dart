@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customize_food/Screens/Buyer/Dashboard/place_order_page.dart';
+import 'package:customize_food/utils/showSnackBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -53,6 +56,23 @@ class _AddToBagState extends State<AddToBag> {
     );
   }
 
+  //code to add favourite list
+  Future addToFavourite() async {
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection("user-favourite-list");
+    return collectionRef
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("items")
+        .doc(widget.products["food_code"])
+        .set({
+      "food_name": widget.products["food_name"],
+      "food_price": widget.products["food_price"],
+      "food_description": widget.products["food_description"],
+      "image_url": widget.products["image_url"],
+      "food_code": widget.products["food_code"]
+    }).then((value) => showSnckBar(context, "Item Added!!"));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,20 +102,33 @@ class _AddToBagState extends State<AddToBag> {
         ),
         //---------------------------------------------------//
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.pinkAccent,
-              child: IconButton(
-                  onPressed: () {
-                    //on press code here
-                  },
-                  icon: Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                  )),
-            ),
-          )
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("user-favourite-list")
+                  .doc(FirebaseAuth.instance.currentUser!.email)
+                  .collection("items")
+                  .where("food_name", isEqualTo: widget.products["food_name"])
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.data == null) {
+                  return Text("item not found!!");
+                }
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.pinkAccent,
+                    child: IconButton(
+                        onPressed: () => snapshot.data.docs.length == 0
+                            ? addToFavourite()
+                            : showSnckBar(
+                                context, "Already Added Favourite !!"),
+                        icon: Icon(
+                          Icons.favorite,
+                          color: Colors.white,
+                        )),
+                  ),
+                );
+              })
         ],
       ),
       body: SafeArea(
