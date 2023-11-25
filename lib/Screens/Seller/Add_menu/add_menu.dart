@@ -1,6 +1,6 @@
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
 
 class AddMenuItem extends StatefulWidget {
   const AddMenuItem({super.key});
@@ -10,8 +10,17 @@ class AddMenuItem extends StatefulWidget {
 }
 
 class _AddMenuItemState extends State<AddMenuItem> {
-  var image = 1;
-  Uint8List? _file;
+  XFile? image;
+  // var img;
+  final ImagePicker picker = ImagePicker();
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+
+    setState(() {
+      image = img;
+    });
+  }
+
   //show popup dialog
   void _imageSelect() {
     showDialog(
@@ -27,7 +36,10 @@ class _AddMenuItemState extends State<AddMenuItem> {
                 children: [
                   ElevatedButton(
                     //if user click this button, user can upload image from gallery
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.gallery);
+                    },
                     child: Row(
                       children: [
                         Icon(Icons.image),
@@ -37,7 +49,10 @@ class _AddMenuItemState extends State<AddMenuItem> {
                   ),
                   ElevatedButton(
                     //if user click this button. user can upload image from camera
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.camera);
+                    },
                     child: Row(
                       children: [
                         Icon(Icons.camera),
@@ -209,42 +224,41 @@ class _AddMenuItemState extends State<AddMenuItem> {
             Row(
               children: [
                 //choose image writing// after choose, pop up of image
-                // image != null
-                //     ? Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 20),
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(8),
-                //     child: Image.file(
-                //       File(image!.path),
-                //       fit: BoxFit.cover,
-                //       width: MediaQuery.of(context).size.width * 0.5,
-                //       height: 200,
-                //     ),
-                //   ),
-                // )
-                // :
-                Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 10, right: 10),
-                      child: Icon(
-                        Icons.photo,
-                        size: 180,
+                image != null
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            File(image!.path),
+                            fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 200,
+                          ),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 10, right: 10),
+                            child: Icon(
+                              Icons.photo,
+                              size: 180,
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            // padding: const EdgeInsets.only(left: 20, bottom: 20),
+                            child: Text(
+                              "Choose Image",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      // padding: const EdgeInsets.only(left: 20, bottom: 20),
-                      child: Text(
-                        "Choose Image",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
                 //upload photo container
                 Container(
                   margin: const EdgeInsets.only(left: 5, right: 5, bottom: 20),
