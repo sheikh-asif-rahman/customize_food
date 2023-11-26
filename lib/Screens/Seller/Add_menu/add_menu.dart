@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Hidden_Drawers/hidden_drawer_seller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +14,40 @@ class AddMenuItem extends StatefulWidget {
 }
 
 class _AddMenuItemState extends State<AddMenuItem> {
+  //upload image to firebase storage
+  String imageUrl = '';
+  uploadImageToFirebase() async {
+    String fileName = DateTime.now().microsecondsSinceEpoch.toString();
+    try {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('seller-product-image/$fileName.jpg');
+      await ref.putFile(File(image!.path));
+      imageUrl = await ref.getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  //upload item data to DB
+  uploadToDB() async {
+    await uploadImageToFirebase();
+    FirebaseFirestore.instance
+        .collection("menu")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("menu")
+        .doc(foodNameController.text)
+        .set({
+      "food_code": foodCodeController.text,
+      "food_name": foodNameController.text,
+      "food_price": foodPriceController.text,
+      "food_description": foodDescriptionController.text,
+      "image_url": imageUrl.toString(),
+    });
+    ;
+  }
+
+  //thisw will capture the image path
   XFile? image;
   // var img;
   final ImagePicker picker = ImagePicker();
@@ -250,7 +288,7 @@ class _AddMenuItemState extends State<AddMenuItem> {
                             margin: const EdgeInsets.only(bottom: 10),
                             // padding: const EdgeInsets.only(left: 20, bottom: 20),
                             child: Text(
-                              "Choose Image",
+                              "Select Image",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -306,11 +344,14 @@ class _AddMenuItemState extends State<AddMenuItem> {
                   ),
                 ),
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => HiddenDrawerSeller(),
-                  //   ),
-                  // );
+                  print(image!.path);
+                  print(imageUrl);
+                  uploadToDB();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HiddenDrawerSeller(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'Create',
