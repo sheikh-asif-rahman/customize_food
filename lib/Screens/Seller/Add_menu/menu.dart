@@ -29,6 +29,7 @@ class _MenuState extends State<Menu> {
           "food_price": qnmenu.docs[i]["food_price"],
           "food_description": qnmenu.docs[i]["food_description"],
           "image_url": qnmenu.docs[i]["image_url"],
+          "seller_mail": qnmenu.docs[i]["seller_mail"]
         });
       }
     });

@@ -43,8 +43,8 @@ class _AddMenuItemState extends State<AddMenuItem> {
       "food_price": foodPriceController.text,
       "food_description": foodDescriptionController.text,
       "image_url": imageUrl.toString(),
+      "seller_mail": FirebaseAuth.instance.currentUser!.email.toString(),
     });
-    ;
   }
 
   //thisw will capture the image path

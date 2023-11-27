@@ -41,6 +41,7 @@ class _DashboardPageBuyerState extends State<DashboardPageBuyer> {
             "food_price": qnmenu.docs[j]["food_price"],
             "food_description": qnmenu.docs[j]["food_description"],
             "image_url": qnmenu.docs[j]["image_url"],
+            "seller_mail": qnmenu.docs[j]["seller_mail"]
           });
         });
       }

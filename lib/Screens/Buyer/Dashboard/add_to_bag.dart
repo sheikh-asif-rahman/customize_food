@@ -69,7 +69,8 @@ class _AddToBagState extends State<AddToBag> {
       "food_price": widget.products["food_price"],
       "food_description": widget.products["food_description"],
       "image_url": widget.products["image_url"],
-      "food_code": widget.products["food_code"]
+      "food_code": widget.products["food_code"],
+      "seller_mail": widget.products["seller_mail"]
     }).then((value) => showSnckBar(context, "Item Added!!"));
   }
 
