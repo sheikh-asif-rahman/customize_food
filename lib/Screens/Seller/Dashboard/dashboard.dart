@@ -9,8 +9,13 @@ class DashboardPageSeller extends StatefulWidget {
 }
 
 class _DashboardPageSellerState extends State<DashboardPageSeller> {
+  //orders count
+  int orderCount = 0;
+  //message count
+  int messageCount = 0;
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.tealAccent,
       body: SafeArea(
@@ -41,134 +46,109 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                //container for Order Online
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.only(left: 20),
-                  //padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.blue;
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                    ),
-                    //on press response code
-                    onPressed: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SwitchOption(),
-                      //   ),
-                      // );
-                    },
-                    child: const Text(
-                      'Customers Offer',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ),
-                ),
-                //container for order pending
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.all(25),
-                  //padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.blue;
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                    ),
-                    //on press response code
-                    onPressed: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SwitchOption(),
-                      //   ),
-                      // );
-                    },
-                    child: const Text(
-                      'Order Pending',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ),
-                ),
-              ],
+            SizedBox(
+              height: 40,
             ),
-
-            Row(
-              children: [
-                //container for ready for rider
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.all(20),
-                  //padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.blue;
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                    ),
-                    //on press response code
-                    onPressed: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SwitchOption(),
-                      //   ),
-                      // );
+            //customers offer button
+            Container(
+              height: 50,
+              width: size.width * 0.8,
+              margin: EdgeInsets.all(10),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return Colors.blue;
+                      }
+                      return Colors.white;
                     },
-                    child: const Text(
-                      'Ready For Rider',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
                   ),
                 ),
-                //container for Customer Message
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.all(20),
-                  //padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.blue;
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                    ),
-                    //on press response code
-                    onPressed: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SwitchOption(),
-                      //   ),
-                      // );
+                //on press response code
+                onPressed: () {
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => SwitchOption(),
+                  //   ),
+                  // );
+                },
+                child: const Text(
+                  'Customers Offer',
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                ),
+              ),
+            ),
+            //orders
+            Container(
+              height: 50,
+              width: size.width * 0.8,
+              margin: EdgeInsets.all(10),
+              //padding: const EdgeInsets.only(left: 20, right: 20),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return Colors.blue;
+                      }
+                      return Colors.white;
                     },
-                    child: const Text(
-                      'Customer Chat',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
                   ),
                 ),
-              ],
+                //on press response code
+                onPressed: () {
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => SwitchOption(),
+                  //   ),
+                  // );
+                },
+                child: orderCount != 0
+                    ? Text(
+                        'Orders ( $orderCount )',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      )
+                    : Text(
+                        'Orders',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+              ),
+            ),
+            //message box
+            Container(
+              height: 50,
+              width: size.width * 0.8,
+              margin: EdgeInsets.all(10),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return Colors.blue;
+                      }
+                      return Colors.white;
+                    },
+                  ),
+                ),
+                //on press response code
+                onPressed: () {
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => SwitchOption(),
+                  //   ),
+                  // );
+                },
+                child: messageCount != 0
+                    ? Text(
+                        'Message ( $messageCount )',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      )
+                    : Text(
+                        'Message',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+              ),
             ),
           ],
         ),

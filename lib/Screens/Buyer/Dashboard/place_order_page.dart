@@ -16,6 +16,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
   bool _isLoading = true;
   //place order to sellet datbase
   placeBuyerOrder() async {
+    //buyer normal order --- buyer mail --- order item --- seller mail --- food name --- items etc
     await FirebaseFirestore.instance
         .collection("buyer-normal-order")
         .doc(FirebaseAuth.instance.currentUser!.email)
@@ -33,7 +34,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       "total_item": count,
       "total_cost": price,
     });
-
+    // normal-order-notification --- seller mail --- order item --- buyer mail --- food
     await FirebaseFirestore.instance
         .collection("normal-order-notification")
         .doc(widget.product["seller_mail"].toString())
