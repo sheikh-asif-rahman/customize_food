@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Screens/Seller/Dashboard/orders.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -10,9 +13,37 @@ class DashboardPageSeller extends StatefulWidget {
 
 class _DashboardPageSellerState extends State<DashboardPageSeller> {
   //orders count
-  int orderCount = 0;
+  var orderCount;
   //message count
   int messageCount = 0;
+  //order given by buyer mail
+  List buyerMail = [];
+  // normal-order-notification --- seller mail --- order item --- buyer mail --- food
+  //fetch order notification
+  fetchOderNotification() async {
+    QuerySnapshot qnmail = await FirebaseFirestore.instance
+        .collection("normal-order-notification")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("order")
+        .get();
+    setState(() {
+      for (int i = 0; i < qnmail.docs.length; i++) {
+        buyerMail.add({
+          "food_name": qnmail.docs[i]["food_name"],
+          "buyer_mail": qnmail.docs[i].id,
+        });
+      }
+      orderCount = qnmail.docs.length;
+    });
+    return qnmail.docs;
+  }
+
+  @override
+  void initState() {
+    fetchOderNotification();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -98,11 +129,11 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                 ),
                 //on press response code
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => SwitchOption(),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => orderListSeller(buyerMail),
+                    ),
+                  );
                 },
                 child: orderCount != 0
                     ? Text(
