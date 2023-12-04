@@ -32,7 +32,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       "image_url": widget.product["image_url"].toString(),
       "seller_mail": widget.product["seller_mail"].toString(),
       "total_item": count,
-      "total_cost": price,
+      "total_cost": totalcost,
     });
     // normal-order-notification --- seller mail --- order item --- buyer mail --- food
     await FirebaseFirestore.instance
@@ -41,6 +41,16 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
         .collection("order")
         .doc(FirebaseAuth.instance.currentUser!.email)
         .set({"food_name": widget.product["food_name"].toString()});
+    setState(() {});
+    await FirebaseFirestore.instance
+        .collection("buyer-to-seller-mail")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("seller-mail")
+        .doc()
+        .set({
+      "seller_mail": widget.product["seller_mail"].toString(),
+      "product_name": widget.product["food_name"].toString()
+    });
     setState(() {
       _isLoading = true;
     });
@@ -49,6 +59,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
   int count = 1;
   int price = 1;
+  var totalcost;
 
   void increment() {
     setState(() {
@@ -67,6 +78,9 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
   }
 
   int total() {
+    setState(() {
+      totalcost = count * price;
+    });
     int totalPrice = count * price;
     return totalPrice;
   }

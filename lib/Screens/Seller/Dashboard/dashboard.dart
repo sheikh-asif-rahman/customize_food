@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:customize_food/Screens/Seller/Dashboard/orders.dart';
+import 'package:customize_food/Screens/Seller/Dashboard/Orders/orders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -198,13 +198,13 @@ class SalesData {
 //value for the graph
 dynamic getColumnData() {
   List<SalesData> columnData = <SalesData>[
-    SalesData("date-1", 100),
-    SalesData("date-2", 200),
-    SalesData("date-3", 300),
-    SalesData("date-4", 700),
-    SalesData("date-5", 500),
-    SalesData("date-6", 100),
-    SalesData("date-7", 600),
+    SalesData("Sat", 100),
+    SalesData("Sun", 200),
+    SalesData("Mon", 300),
+    SalesData("Tue", 700),
+    SalesData("Wen", 500),
+    SalesData("Thu", 100),
+    SalesData("Fri", 600),
   ];
   return columnData;
 }

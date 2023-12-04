@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Screens/Seller/Dashboard/Orders/seller_order_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -87,8 +88,10 @@ class _orderListSellerState extends State<orderListSeller> {
               //click page route code//
               return GestureDetector(
                 onTap: () {
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (_) => OrderDetail()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SellerOrderDetail(orderList[index])));
                 },
                 //card detail code//
                 child: Card(
@@ -97,7 +100,7 @@ class _orderListSellerState extends State<orderListSeller> {
                   child: ListTile(
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
-                        child: Image.asset("image/burger.jpg"),
+                        child: Image.network(orderList[index]["image_url"]),
                       ),
                       title: Center(
                         child: Text(
