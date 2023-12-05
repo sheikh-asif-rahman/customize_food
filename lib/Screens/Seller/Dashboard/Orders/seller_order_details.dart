@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Hidden_Drawers/hidden_drawer_seller.dart';
+import 'package:customize_food/utils/showSnackBar.dart';
 import 'package:flutter/material.dart';
 
 class SellerOrderDetail extends StatefulWidget {
@@ -9,6 +12,26 @@ class SellerOrderDetail extends StatefulWidget {
 }
 
 class _SellerOrderDetailState extends State<SellerOrderDetail> {
+  //update to DB after clicking ready for deliver
+  orderReadyUpdate() {
+    CollectionReference collectionRef = FirebaseFirestore.instance
+        .collection("buyer-normal-order")
+        .doc(widget.data["buyer_mail"].toString())
+        .collection("order-item")
+        .doc(widget.data["seller_mail"].toString())
+        .collection(widget.data["food_name"].toString());
+    return collectionRef
+        .doc(widget.data["food_name"].toString())
+        .update({"is_order_ready": true}).then((value) => {
+              showSnckBar(context, "Item Sened!!"),
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => HiddenDrawerSeller(),
+                ),
+              )
+            });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -107,30 +130,53 @@ class _SellerOrderDetailState extends State<SellerOrderDetail> {
                 height: 50,
                 width: size.width * 0.8,
                 margin: const EdgeInsets.all(10),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.orangeAccent;
-                        }
-                        return Colors.white;
-                      },
-                    ),
-                  ),
-                  //on press response code
-                  onPressed: () {
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => SwitchOption(),
-                    //   ),
-                    // );
-                  },
-                  child: const Text(
-                    'Ready For Deliver',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
+                child: widget.data["is_order_ready"] == false
+                    ? ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.orangeAccent;
+                              }
+                              return Colors.white;
+                            },
+                          ),
+                        ),
+                        //on press response code
+                        onPressed: () {
+                          orderReadyUpdate();
+                        },
+                        child: const Text(
+                          'Ready For Deliver',
+                          style: TextStyle(color: Colors.black, fontSize: 30),
+                        ),
+                      )
+                    : ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.orangeAccent;
+                              }
+                              return Colors.white;
+                            },
+                          ),
+                        ),
+                        //on press response code
+                        onPressed: () {
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => SwitchOption(),
+                          //   ),
+                          // );
+                        },
+                        child: const Text(
+                          'Waiting To Be Confirmed',
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                      ),
               ),
             ),
           ],

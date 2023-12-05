@@ -13,7 +13,6 @@ class OrderList extends StatefulWidget {
 class _OrderListState extends State<OrderList> {
   var orderReadyYes = "Done";
   var orderReadyNo = "Pending";
-  var pending = 0;
   List orderList = [];
   List sellermails = [];
   List itemName = [];
@@ -51,31 +50,40 @@ class _OrderListState extends State<OrderList> {
             "food_price": qnProducts.docs[0]["food_price"],
             "total_item": qnProducts.docs[0]["total_item"],
             "total_cost": qnProducts.docs[0]["total_cost"],
+            "order_pending_status": qnProducts.docs[0]["order_pending_status"],
+            "is_order_ready": qnProducts.docs[0]["is_order_ready"],
           });
         });
       }
     }
+    //printing just for debuging here
     print(itemName);
+    print(sellermails);
     print(orderList);
+  }
+
+  @override
+  void initState() {
+    fetchOderList();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 68, 79, 83),
+      backgroundColor: const Color.fromARGB(255, 68, 79, 83),
       body: SafeArea(
         //for list type page of order list//
         child: ListView.builder(
-            itemCount: 15,
+            itemCount: orderList.length,
             itemBuilder: (_, index) {
               //click page route code//
               return GestureDetector(
                 onTap: () {
-                  fetchOderList();
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (_) =>
-                  //     OrderDetail()
-                  //     ));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => OrderDetail(orderList[index])));
                 },
                 //card detail code//
                 child: Card(
@@ -83,32 +91,50 @@ class _OrderListState extends State<OrderList> {
                   elevation: 10,
                   child: ListTile(
                     leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.asset("image/burger.jpg"),
+                      borderRadius: BorderRadius.circular(1),
+                      child: Image.network(orderList[index]["image_url"]),
                     ),
-                    title: const Center(
+                    title: Center(
                       child: Text(
-                        "Burger",
-                        style: TextStyle(
+                        orderList[index]["food_name"],
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    subtitle: const Center(
-                      child: Text(
-                        "Shop Name",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                    subtitle: Container(
+                      padding:
+                          const EdgeInsets.only(left: 30, top: 5, bottom: 10),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Total Cost ",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            orderList[index]["total_cost"].toString(),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const Text(
+                            " TK",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ),
                     trailing: SizedBox(
-                        child: pending != 1
+                        //pending for faulse
+                        //done for true
+                        child: orderList[index]["is_order_ready"] == false
                             ? Container(
-                                padding: EdgeInsets.all(7),
-                                margin: EdgeInsets.all(5),
+                                padding: const EdgeInsets.all(7),
+                                margin: const EdgeInsets.all(5),
                                 height: 50,
                                 width: 90,
                                 color: Colors.yellow,
-                                child: Text(
+                                child: const Text(
                                   "Pending",
                                   style: TextStyle(
                                       fontSize: 20,
@@ -116,13 +142,13 @@ class _OrderListState extends State<OrderList> {
                                 ),
                               )
                             : Container(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     left: 20, right: 20, top: 10),
-                                margin: EdgeInsets.all(5),
+                                margin: const EdgeInsets.all(5),
                                 height: 50,
                                 width: 90,
                                 color: Colors.greenAccent,
-                                child: Text(
+                                child: const Text(
                                   "Done",
                                   style: TextStyle(
                                       fontSize: 20,

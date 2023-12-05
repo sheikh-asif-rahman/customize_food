@@ -17,21 +17,6 @@ class _AddToBagState extends State<AddToBag> {
   //rating value variable
   double rating = 2;
   int count = 1;
-  void increment() {
-    setState(() {
-      if (count < 15) {
-        count++;
-      }
-    });
-  }
-
-  void decrement() {
-    setState(() {
-      if (count > 1) {
-        count--;
-      }
-    });
-  }
 
   //alert box code
   showAlertDialog() {

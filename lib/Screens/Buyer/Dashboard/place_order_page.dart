@@ -23,7 +23,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
         .collection("order-item")
         .doc(widget.product["seller_mail"].toString())
         .collection(widget.product["food_name"].toString())
-        .doc()
+        .doc(widget.product["food_name"].toString())
         .set({
       "food_code": widget.product["food_code"].toString(),
       "food_name": widget.product["food_name"].toString(),
@@ -31,8 +31,11 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       "food_description": widget.product["food_description"].toString(),
       "image_url": widget.product["image_url"].toString(),
       "seller_mail": widget.product["seller_mail"].toString(),
+      "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
       "total_item": count,
       "total_cost": totalcost,
+      "order_pending_status": false,
+      "is_order_ready": false,
     });
     // normal-order-notification --- seller mail --- order item --- buyer mail --- food
     await FirebaseFirestore.instance

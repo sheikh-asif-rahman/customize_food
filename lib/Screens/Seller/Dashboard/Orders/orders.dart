@@ -41,6 +41,12 @@ class _orderListSellerState extends State<orderListSeller> {
           "food_price": qnProducts.docs[0]["food_price"],
           "total_item": qnProducts.docs[0]["total_item"],
           "total_cost": qnProducts.docs[0]["total_cost"],
+          "seller_mail": qnProducts.docs[0]["seller_mail"],
+          "buyer_mail": qnProducts.docs[0]["buyer_mail"],
+          //this is for buyer status
+          "order_pending_status": qnProducts.docs[0]["order_pending_status"],
+          //this is for seller status
+          "is_order_ready": qnProducts.docs[0]["is_order_ready"]
         });
       });
     }
