@@ -1,11 +1,7 @@
 import 'package:customize_food/Screens/Seller/Dashboard/dashboard.dart';
 import 'package:customize_food/screens/buyer/orders/order_list.dart';
-import 'package:customize_food/screens/buyer/profile/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
-import '../Screens/Buyer/Dashboard/dashboard.dart';
-import '../Screens/Buyer/Favourite/favourite.dart';
-import '../Screens/Buyer/Statement/statement_details.dart';
 import '../Screens/Seller/Add_menu/menu.dart';
 import '../Screens/Seller/Profile/profile.dart';
 
@@ -55,14 +51,6 @@ class _HiddenDrawerSellerState extends State<HiddenDrawerSeller> {
           ),
           Menu()),
       //   //4th page of drawer--------Order List
-        ScreenHiddenDrawer(
-            ItemHiddenMenu(
-              name: "Order List",
-              baseStyle: textstyle1,
-              selectedStyle: textstyle2,
-              colorLineSelected: Colors.pink,
-            ),
-            OrderList()),
 
       //   //6th page of drawer---------- User Detail
       ScreenHiddenDrawer(
@@ -73,8 +61,6 @@ class _HiddenDrawerSellerState extends State<HiddenDrawerSeller> {
             colorLineSelected: Colors.pink,
           ),
           SellerProfile()),
-
-
     ];
   }
 

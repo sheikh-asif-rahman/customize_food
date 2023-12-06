@@ -45,6 +45,12 @@ class _AddMenuItemState extends State<AddMenuItem> {
       "image_url": imageUrl.toString(),
       "seller_mail": FirebaseAuth.instance.currentUser!.email.toString(),
     });
+    FirebaseFirestore.instance
+        .collection("menu-holder-user-list")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .set({
+      "seller_mail": FirebaseAuth.instance.currentUser!.email.toString(),
+    });
   }
 
   //thisw will capture the image path

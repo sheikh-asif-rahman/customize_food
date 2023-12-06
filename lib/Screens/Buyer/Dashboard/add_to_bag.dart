@@ -125,15 +125,17 @@ class _AddToBagState extends State<AddToBag> {
             //=================================================//
             //==================================================//
             //image part
-            Container(
-              margin: const EdgeInsets.only(
-                left: 30,
-                right: 30,
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 30,
+                  right: 30,
+                ),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Image.network(widget.products["image_url"]),
+                height: 300,
+                // width: 300,
               ),
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Image.network(widget.products["image_url"]),
-              height: 300,
-              // width: 300,
             ),
             //=================================================//
             //==================================================//

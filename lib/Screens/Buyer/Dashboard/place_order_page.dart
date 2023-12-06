@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:customize_food/screens/buyer/dashboard/bargening_platform.dart';
+import 'package:customize_food/Hidden_Drawers/hidden_drawer_buyer.dart';
+import 'package:customize_food/Screens/Buyer/Bargenning/buyer_offer_platform.dart.dart';
 import 'package:customize_food/utils/showSnackBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class PlaceOrderPage extends StatefulWidget {
   var product;
   PlaceOrderPage(this.product);
@@ -58,10 +60,13 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       _isLoading = true;
     });
     showSnckBar(context, "Order Placed !!");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => HiddenDrawerBuyer()));
   }
 
   int count = 1;
   int price = 1;
+  // ignore: prefer_typing_uninitialized_variables
   var totalcost;
 
   void increment() {
@@ -96,6 +101,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -261,48 +267,11 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                     ),
                   ],
                 ),
-                //Delivery location pickup button
-                Container(
-                  margin: const EdgeInsets.only(
-                    left: 85,
-                    right: 85,
-                  ),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.pink;
-                          }
-                          return Colors.blue;
-                        },
-                      ),
-                    ),
-                    onPressed: () {
-                      //onpress action code here
-                    },
-                    child: const Row(
-                      children: [
-                        Text(
-                          'Delivery Location',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(width: 10),
-                        Icon(Icons.map_sharp)
-                      ],
-                    ),
-                  ),
-                ),
-
                 Row(
                   children: [
-                    //bargening button
+                    //Put My Offer button
                     Container(
-                      margin: const EdgeInsets.only(
-                          left: 40, right: 10, bottom: 10, top: 10),
+                      margin: const EdgeInsets.all(20),
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -319,12 +288,12 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
-                                  BargeningPlatform(widget.product),
+                                  BuyerOfferPlatform(widget.product),
                             ),
                           );
                         },
                         child: const Text(
-                          'Bargening',
+                          'Put My Offer',
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 20,
@@ -368,8 +337,9 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
                 //button for customize food
                 Container(
-                  margin: const EdgeInsets.only(
-                      left: 120, right: 5, bottom: 10, top: 10),
+                  margin: const EdgeInsets.all(20),
+                  width: size.width,
+                  height: 40,
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -390,7 +360,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       // );
                     },
                     child: const Text(
-                      'Make it Custom for me',
+                      'Custom This Food',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -398,7 +368,6 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                     ),
                   ),
                 ),
-                //side by side button for order and cart
               ],
             )),
     );

@@ -1,3 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Hidden_Drawers/hidden_drawer_buyer.dart';
+import 'package:customize_food/Hidden_Drawers/hidden_drawer_seller.dart';
+import 'package:customize_food/utils/showSnackBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetail extends StatefulWidget {
@@ -10,7 +15,38 @@ class OrderDetail extends StatefulWidget {
 
 class _OrderDetailState extends State<OrderDetail> {
   //after receiving order, it will delete it from DB and send it to history DB part
-  received() {}
+  received() async {
+    //buyer to seller mail delete
+    await FirebaseFirestore.instance
+        .collection("buyer-to-seller-mail")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("seller-mail")
+        .doc()
+        .delete();
+    //buyer normal oder data delete
+    await FirebaseFirestore.instance
+        .collection("buyer-normal-order")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("order-item")
+        .doc(widget.products["seller_mail"].toString())
+        .collection(widget.products["food_name"].toString())
+        .doc(widget.products["food_name"].toString())
+        .delete();
+
+    //normal order notification delete
+    await FirebaseFirestore.instance
+        .collection("normal-order-notification")
+        .doc(widget.products["seller_mail"].toString())
+        .collection("order")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .delete()
+        .then((value) => {
+              showSnckBar(context, "Order Received!!"),
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => HiddenDrawerBuyer()))
+            });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -125,14 +161,7 @@ class _OrderDetailState extends State<OrderDetail> {
                           },
                         ),
                       ),
-                      onPressed: () {
-                        // //onpress action code here
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (context) => PlaceOrderPage(widget.products),
-                        //   ),
-                        // );
-                      },
+                      onPressed: () {},
                       child: const Text(
                         'PENDING',
                         style: TextStyle(
@@ -154,12 +183,7 @@ class _OrderDetailState extends State<OrderDetail> {
                         ),
                       ),
                       onPressed: () {
-                        // //onpress action code here
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (context) => PlaceOrderPage(widget.products),
-                        //   ),
-                        // );
+                        received();
                       },
                       child: const Text(
                         'RECEIVE',

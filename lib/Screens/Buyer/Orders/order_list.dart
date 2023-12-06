@@ -52,6 +52,8 @@ class _OrderListState extends State<OrderList> {
             "total_cost": qnProducts.docs[0]["total_cost"],
             "order_pending_status": qnProducts.docs[0]["order_pending_status"],
             "is_order_ready": qnProducts.docs[0]["is_order_ready"],
+            "seller_mail": qnProducts.docs[0]["seller_mail"],
+            "buyer_mail": qnProducts.docs[0]["buyer_mail"],
           });
         });
       }
