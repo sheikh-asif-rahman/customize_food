@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class BuyerOfferPlatform extends StatefulWidget {
@@ -10,6 +12,9 @@ class BuyerOfferPlatform extends StatefulWidget {
 class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
   int count = 1;
   int price = 1;
+  var totalcost;
+
+  TextEditingController buyerPriceController = TextEditingController();
 
   void increment() {
     setState(() {
@@ -28,12 +33,39 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
   }
 
   int total() {
+    setState(() {
+      totalcost = count * price;
+    });
     int totalPrice = count * price;
     return totalPrice;
   }
 
   //buyer send action
-  send() {}
+  send() async {
+    //buyer-offer-to-seller --- buyer mail --- order item --- seller mail --- foodname --- foodname --- details
+    await FirebaseFirestore.instance
+        .collection("buyer-offer-to-seller")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("order-item")
+        .doc(widget.product["seller_mail"].toString())
+        .collection(widget.product["food_name"].toString())
+        .doc(widget.product["food_name"].toString())
+        .set({
+      "food_code": widget.product["food_code"].toString(),
+      "food_name": widget.product["food_name"].toString(),
+      "food_price": widget.product["food_price"].toString(),
+      "food_description": widget.product["food_description"].toString(),
+      "image_url": widget.product["image_url"].toString(),
+      "seller_mail": widget.product["seller_mail"].toString(),
+      "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
+      "total_item": count,
+      "total_cost": totalcost,
+      "buyer_offer": buyerPriceController.text,
+      "order_pending_status": false,
+      "is_order_ready": false,
+    });
+  }
+
   //sellers offer confirm
   confirm() {}
 
@@ -246,7 +278,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                           ),
                           child: TextFormField(
                             //get value to controller
-                            // controller: emailController,
+                            controller: buyerPriceController,
                             cursorColor: Colors.white,
                             style: const TextStyle(
                               color: Colors.orange,
@@ -280,6 +312,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                               ),
                             ),
                             onPressed: () {
+                              send();
                               // Navigator.of(context).push(
                               //   MaterialPageRoute(
                               //     builder: (context) => const SignupScreen(),
