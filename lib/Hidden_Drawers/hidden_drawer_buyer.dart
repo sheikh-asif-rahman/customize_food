@@ -1,3 +1,4 @@
+import 'package:customize_food/Screens/Buyer/Bargenning/buyer_offer_notification.dart';
 import 'package:customize_food/screens/buyer/orders/order_list.dart';
 import 'package:customize_food/screens/buyer/profile/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,15 @@ class _HiddenDrawerBuyerState extends State<HiddenDrawerBuyer> {
             colorLineSelected: Colors.pink,
           ),
           FavouriteFoodList()),
+      //second page of drawer-----Favourite Food List
+      ScreenHiddenDrawer(
+          ItemHiddenMenu(
+            name: "Offered",
+            baseStyle: textstyle1,
+            selectedStyle: textstyle2,
+            colorLineSelected: Colors.pink,
+          ),
+          BuyerOfferNotification()),
 
       //4th page of drawer--------Order List
       ScreenHiddenDrawer(

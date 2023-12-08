@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Hidden_Drawers/hidden_drawer_buyer.dart';
+import 'package:customize_food/utils/showSnackBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -42,28 +44,62 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
 
   //buyer send action
   send() async {
-    //buyer-offer-to-seller --- buyer mail --- order item --- seller mail --- foodname --- foodname --- details
-    await FirebaseFirestore.instance
-        .collection("buyer-offer-to-seller")
-        .doc(FirebaseAuth.instance.currentUser!.email)
-        .collection("order-item")
-        .doc(widget.product["seller_mail"].toString())
-        .collection(widget.product["food_name"].toString())
-        .doc(widget.product["food_name"].toString())
-        .set({
-      "food_code": widget.product["food_code"].toString(),
-      "food_name": widget.product["food_name"].toString(),
-      "food_price": widget.product["food_price"].toString(),
-      "food_description": widget.product["food_description"].toString(),
-      "image_url": widget.product["image_url"].toString(),
-      "seller_mail": widget.product["seller_mail"].toString(),
-      "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
-      "total_item": count,
-      "total_cost": totalcost,
-      "buyer_offer": buyerPriceController.text,
-      "order_pending_status": false,
-      "is_order_ready": false,
-    });
+    if (buyerPriceController.text.isNotEmpty) {
+      //buyer-offer-to-seller --- buyer mail --- order item --- seller mail --- foodname --- foodname --- details
+      await FirebaseFirestore.instance
+          .collection("buyer-offer-to-seller")
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .collection("order-item")
+          .doc(widget.product["seller_mail"].toString())
+          .collection(widget.product["food_name"].toString())
+          .doc(widget.product["food_name"].toString())
+          .set({
+        "food_code": widget.product["food_code"].toString(),
+        "food_name": widget.product["food_name"].toString(),
+        "food_price": widget.product["food_price"].toString(),
+        "food_description": widget.product["food_description"].toString(),
+        "image_url": widget.product["image_url"].toString(),
+        "seller_mail": widget.product["seller_mail"].toString(),
+        "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
+        "total_item": count,
+        "total_cost": totalcost,
+        "buyer_offer": buyerPriceController.text,
+        "seller_offer": 0,
+        "attemp_no": 1,
+        "order_pending_status": false,
+        "is_order_ready": false,
+      });
+
+      // Buyer-offer-notification --- seller mail --- order item --- buyer mail --- food
+      await FirebaseFirestore.instance
+          .collection("buyer-offer-notification")
+          .doc(widget.product["seller_mail"].toString())
+          .collection("order")
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .set({
+        "food_name": widget.product["food_name"].toString(),
+        "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
+      });
+      //store seller mail and food name
+      await FirebaseFirestore.instance
+          .collection("buyer-offer-to-seller-mail")
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .collection("seller-mail")
+          .doc()
+          .set({
+        "seller_mail": widget.product["seller_mail"].toString(),
+        "product_name": widget.product["food_name"].toString()
+      }).then((value) => {
+                showSnckBar(context, "Your Offer Placed!!"),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const HiddenDrawerBuyer(),
+                  ),
+                )
+              });
+    } else {
+      showSnckBar(context, "Your Offer Box Is Empty !!");
+    }
   }
 
   //sellers offer confirm
@@ -107,6 +143,12 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(children: [
+            //image of the food
+            Center(
+                child: Container(
+                    margin: EdgeInsets.all(10),
+                    height: 300,
+                    child: Image.network(widget.product["image_url"]))),
             //name of the food
             SizedBox(
               child: Text(
@@ -313,11 +355,6 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                             ),
                             onPressed: () {
                               send();
-                              // Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const SignupScreen(),
-                              //   ),
-                              // );
                             },
                             child: const Text(
                               'Send',
@@ -339,103 +376,6 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                           ),
                         ),
                       ],
-                    ),
-                  ],
-                ),
-              ),
-              //column for seller part box
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    border: Border.all(color: Colors.black, width: 3),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      child: Text(
-                        "Seller Box",
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.pinkAccent),
-                      ),
-                    ),
-                    //your offer part
-                    Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                            left: 10,
-                            right: 10,
-                          ),
-                          padding: const EdgeInsets.only(left: 10),
-                          child: const Text(
-                            "Sellers Offer:",
-                            style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(right: 10, left: 35),
-                          alignment: Alignment.center,
-                          height: 45,
-                          width: 135,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: TextFormField(
-                            //get value to controller
-                            // controller: emailController,
-                            cursorColor: Colors.white,
-                            style: const TextStyle(
-                              color: Colors.orange,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: const InputDecoration(
-                              labelStyle: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    //send button container
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 20,
-                      ),
-                      width: 250,
-                      height: 50,
-                      padding: const EdgeInsets.only(right: 100),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.pressed)) {
-                                return Colors.pink;
-                              }
-                              return Colors.orangeAccent;
-                            },
-                          ),
-                        ),
-                        onPressed: () {
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const SignupScreen(),
-                          //   ),
-                          // );
-                        },
-                        child: const Text(
-                          'Confirm',
-                          style: TextStyle(color: Colors.black, fontSize: 25),
-                        ),
-                      ),
                     ),
                   ],
                 ),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customize_food/Screens/Seller/Dashboard/Bargenning/seller_offer_notification.dart';
 import 'package:customize_food/Screens/Seller/Dashboard/Orders/orders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,16 @@ class DashboardPageSeller extends StatefulWidget {
 class _DashboardPageSellerState extends State<DashboardPageSeller> {
   //orders count
   var orderCount;
+  //customers offer count
+  var customersOfferCount;
   //message count
   int messageCount = 0;
   //order given by buyer mail
   List buyerMail = [];
+  //custom offer buyer mail
+  List customMail = [];
   // normal-order-notification --- seller mail --- order item --- buyer mail --- food
-  //fetch order notification
+  //fetch normal order notification
   fetchOderNotification() async {
     QuerySnapshot qnmail = await FirebaseFirestore.instance
         .collection("normal-order-notification")
@@ -38,9 +43,30 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
     return qnmail.docs;
   }
 
+  //fetch Buyer Offer notification
+  // Buyer-offer-notification --- seller mail --- order item --- buyer mail --- food
+  fetchBuyersOfferNotification() async {
+    QuerySnapshot qnoffermail = await FirebaseFirestore.instance
+        .collection("buyer-offer-notification")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("order")
+        .get();
+    setState(() {
+      for (int i = 0; i < qnoffermail.docs.length; i++) {
+        customMail.add({
+          "food_name": qnoffermail.docs[i]["food_name"],
+          "buyer_mail": qnoffermail.docs[i].id,
+        });
+      }
+      customersOfferCount = qnoffermail.docs.length;
+    });
+    return qnoffermail.docs;
+  }
+
   @override
   void initState() {
     fetchOderNotification();
+    fetchBuyersOfferNotification();
     super.initState();
   }
 
@@ -98,16 +124,21 @@ class _DashboardPageSellerState extends State<DashboardPageSeller> {
                 ),
                 //on press response code
                 onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => SwitchOption(),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SellerOfferNotification(customMail),
+                    ),
+                  );
                 },
-                child: const Text(
-                  'Customers Offer',
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                ),
+                child: customersOfferCount != 0
+                    ? Text(
+                        'Customers Offer ( $customersOfferCount )',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      )
+                    : const Text(
+                        'Customers Offer',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
               ),
             ),
             //orders

@@ -46,7 +46,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
         .collection("order")
         .doc(FirebaseAuth.instance.currentUser!.email)
         .set({"food_name": widget.product["food_name"].toString()});
-    setState(() {});
+    //store seller mail and food name
     await FirebaseFirestore.instance
         .collection("buyer-to-seller-mail")
         .doc(FirebaseAuth.instance.currentUser!.email)
