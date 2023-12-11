@@ -143,6 +143,5 @@ class _orderListSellerState extends State<orderListSeller> {
             }),
       ),
     );
-    ;
   }
 }

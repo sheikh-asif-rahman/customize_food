@@ -50,7 +50,7 @@ class _BuyerOfferNotificationState extends State<BuyerOfferNotification> {
             "total_cost": qnProducts.docs[0]["total_cost"],
             "buyer_offer": qnProducts.docs[0]["buyer_offer"],
             "seller_offer": qnProducts.docs[0]["seller_offer"],
-            "attemp_no": qnProducts.docs[0]["attemp_no"],
+            "attempt_no": qnProducts.docs[0]["attempt_no"],
             "order_pending_status": qnProducts.docs[0]["order_pending_status"],
             "is_order_ready": qnProducts.docs[0]["is_order_ready"],
             "seller_mail": qnProducts.docs[0]["seller_mail"],
@@ -86,7 +86,12 @@ class _BuyerOfferNotificationState extends State<BuyerOfferNotification> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => OfferDetail(orderList[index])));
+                          builder: (_) => OfferDetail(orderList[index]))).then(
+                      (value) => {
+                            orderList.clear(),
+                            sellermails.clear(),
+                            itemName.clear()
+                          });
                 },
                 //card detail code//
                 child: Card(

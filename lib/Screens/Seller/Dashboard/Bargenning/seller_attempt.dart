@@ -1,113 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:customize_food/Hidden_Drawers/hidden_drawer_buyer.dart';
-import 'package:customize_food/utils/showSnackBar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class BuyerOfferPlatform extends StatefulWidget {
+class SellerAttempt extends StatefulWidget {
   var product;
-  BuyerOfferPlatform(this.product);
+  SellerAttempt(this.product);
+
   @override
-  State<BuyerOfferPlatform> createState() => _BuyerOfferPlatformState();
+  State<SellerAttempt> createState() => _SellerAttemptState();
 }
 
-class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
-  int count = 1;
-  int price = 1;
-  var totalcost;
-
-  TextEditingController buyerPriceController = TextEditingController();
-
-  void increment() {
-    setState(() {
-      if (count < 15) {
-        count++;
-      }
-    });
-  }
-
-  void decrement() {
-    setState(() {
-      if (count > 1) {
-        count--;
-      }
-    });
-  }
-
-  int total() {
-    setState(() {
-      totalcost = count * price;
-    });
-    int totalPrice = count * price;
-    return totalPrice;
-  }
-
-  //buyer send action
-  send() async {
-    if (buyerPriceController.text.isNotEmpty) {
-      //buyer-offer-to-seller --- buyer mail --- order item --- seller mail --- foodname --- foodname --- details
-      await FirebaseFirestore.instance
-          .collection("buyer-offer-to-seller")
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .collection("order-item")
-          .doc(widget.product["seller_mail"].toString())
-          .collection(widget.product["food_name"].toString())
-          .doc(widget.product["food_name"].toString())
-          .set({
-        "food_code": widget.product["food_code"].toString(),
-        "food_name": widget.product["food_name"].toString(),
-        "food_price": widget.product["food_price"].toString(),
-        "food_description": widget.product["food_description"].toString(),
-        "image_url": widget.product["image_url"].toString(),
-        "seller_mail": widget.product["seller_mail"].toString(),
-        "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
-        "total_item": count,
-        "total_cost": totalcost,
-        "buyer_offer": buyerPriceController.text,
-        "seller_offer": 0,
-        "attempt_no": 1,
-        "order_pending_status": false,
-        "is_order_ready": false,
-      });
-
-      // Buyer-offer-notification --- seller mail --- order item --- buyer mail --- food
-      await FirebaseFirestore.instance
-          .collection("buyer-offer-notification")
-          .doc(widget.product["seller_mail"].toString())
-          .collection("order")
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .set({
-        "food_name": widget.product["food_name"].toString(),
-        "buyer_mail": FirebaseAuth.instance.currentUser!.email.toString(),
-      });
-      //store seller mail and food name
-      await FirebaseFirestore.instance
-          .collection("buyer-offer-to-seller-mail")
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .collection("seller-mail")
-          .doc()
-          .set({
-        "seller_mail": widget.product["seller_mail"].toString(),
-        "product_name": widget.product["food_name"].toString()
-      }).then((value) => {
-                showSnckBar(context, "Your Offer Placed!!"),
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const HiddenDrawerBuyer(),
-                  ),
-                )
-              });
-    } else {
-      showSnckBar(context, "Your Offer Box Is Empty !!");
-    }
-  }
-
-  @override
-  void initState() {
-    price = int.parse(widget.product["food_price"]);
-    super.initState();
-  }
-
+class _SellerAttemptState extends State<SellerAttempt> {
+  bool _isLoading = true;
+  TextEditingController sellerPriceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +19,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
         backgroundColor: Colors.blue,
         elevation: 15,
         title: const Text(
-          "Your Offer",
+          "Put My Offer",
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 35),
         ),
@@ -171,86 +74,37 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: Column(
                   children: [
-                    //your box name
-                    const SizedBox(
-                      child: Text(
-                        "Your Box",
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.pinkAccent),
-                      ),
-                    ),
-
-                    //increment decrement button part----------------//
+                    //total Item
                     Row(
                       children: [
-                        //add how much item you want in count :
                         Container(
-                          alignment: Alignment.centerLeft,
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.only(left: 30, right: 30),
-
-                          // width: 100,
-                          // height: 35,
+                          margin: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          padding: const EdgeInsets.only(left: 10),
                           child: const Text(
                             "Total Item:",
                             style: TextStyle(
-                                fontSize: 28,
+                                fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           ),
                         ),
-                        //plus button
                         Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlueAccent,
-                            borderRadius: BorderRadius.circular(4),
+                          margin: const EdgeInsets.only(left: 10, right: 10),
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          alignment: Alignment.centerRight,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
                           ),
-                          child: GestureDetector(
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.black,
-                              size: 35,
-                            ),
-                            onTap: () {
-                              //ontap action code here-----------//
-                              increment();
-                            },
-                          ),
-                        ),
-                        //screen for increament decreament button action
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Text(
-                            count.toString(),
+                            "${widget.product["total_item"]}",
                             style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orangeAccent,
-                            ),
-                          ),
-                        ),
-                        //decreament button
-                        Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: GestureDetector(
-                            child: const Icon(
-                              Icons.remove,
-                              color: Colors.black,
-                              size: 35,
-                            ),
-                            onTap: () => {
-                              //ontape action code
-                              decrement()
-                            },
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: Colors.white),
                           ),
                         ),
                       ],
@@ -281,7 +135,42 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                             color: Colors.transparent,
                           ),
                           child: Text(
-                            "\TK ${total().toString()}",
+                            "${widget.product["total_cost"]} TK",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                    //Buyer Offered
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          padding: const EdgeInsets.only(left: 10),
+                          child: const Text(
+                            "Buyer Offered:",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 10, right: 10),
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          alignment: Alignment.centerRight,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                          ),
+                          child: Text(
+                            "${widget.product["buyer_offer"]} TK",
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 25,
@@ -300,7 +189,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                           ),
                           padding: const EdgeInsets.only(left: 30),
                           child: const Text(
-                            "Your Offer:",
+                            "My Offer:",
                             style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
@@ -317,7 +206,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                           ),
                           child: TextFormField(
                             //get value to controller
-                            controller: buyerPriceController,
+                            controller: sellerPriceController,
                             cursorColor: Colors.white,
                             style: const TextStyle(
                               color: Colors.orange,
@@ -331,6 +220,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                         ),
                       ],
                     ),
+
                     //send button container
                     Container(
                       margin:
@@ -349,9 +239,7 @@ class _BuyerOfferPlatformState extends State<BuyerOfferPlatform> {
                             },
                           ),
                         ),
-                        onPressed: () {
-                          send();
-                        },
+                        onPressed: () {},
                         child: const Text(
                           'Send',
                           style: TextStyle(color: Colors.black, fontSize: 25),
